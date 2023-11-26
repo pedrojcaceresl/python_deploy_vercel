@@ -15,6 +15,10 @@ from pathlib import Path
 import os
 import dj_database_url
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,7 +32,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*", '.vercel.app']
+ALLOWED_HOSTS = ["*", ".vercel.app"]
 
 
 # Application definition
@@ -89,12 +93,27 @@ WSGI_APPLICATION = "python_heroku_task.wsgi.application"
 #     'sslmode' = 'require'
 # }
 
-
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "HOST": os.environ.get("SUPABASE_HOST"),
+        "PASSWORD": os.environ.get("SUPABASE_PASSWORD"),
+        "PORT": "5432",
+        "OPTIONS": {
+            "sslmode": "verify-full",
+            "sslrootcert": os.path.join(BASE_DIR, "prod-ca-2021.crt"),
+        },
+    }
 }
+
+
+# DATABASES = {
+#     "default": dj_database_url.config(
+#         default=os.environ.get("DATABASE_URL"),
+#     )
+# }
 
 
 # Password validation
